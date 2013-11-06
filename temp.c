@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+#define BUFSIZE 10000
+
+int main(int argc, char **argv) {
+  
+  char *result = (char *) malloc(sizeof(char) * 10000);
+  char *s1 = (char *) malloc(sizeof(char) * 10000);
+  char *param = "/?param=";
+  char *path = (char *) malloc(sizeof(char) * 2000);
+  char *buf = (char *) malloc(sizeof(char) * BUFSIZE);
+  char *cmd1 = (char *) malloc(sizeof(char) *1000);
+  char *cmd2 = (char *) malloc(sizeof(char) *1000);
+  char *pos;
+  char c;
+  int index = 0;
+  FILE *file;
+  struct stat s;
+
+  pos = strstr(argv[1], param) + 8;
+  while ((c = *pos) != '\0') {
+    path[index++] = c;
+    pos++;
+  }
+  path[index] = '\n';
+
+  strcat(result, param);
+  strcat(result, path);
+  path[index] = NULL;// after concat to result
+  printf("%s\n", result);
+  
+  if (stat(path, &s) == 0) {
+    if (s.st_mode & S_IFDIR) {
+      printf("directory\n");
+      strcat(cmd1, "ls -l ");
+      strcat(cmd1, path);
+      file = popen(cmd1, "r");
+      while (fgets(buf, BUFSIZE, file)) 
+	strcat(result, buf);
+      pclose(file);
+      printf("%s", result);
+    } else if (s.st_mode & S_IFREG) {
+      printf("file\n");
+      strcat(cmd2, "cat ");
+      strcat(cmd2, path);
+      file = popen(cmd2, "r");
+      while (fgets(buf, 10000, file)) 
+	strcat(result, buf);
+      pclose(file);
+      printf("%s", result);
+    } else {
+      printf("something else\n");
+    }
+  } else {
+    strcat(result, "Error!\n");
+    printf("wtf!\n");
+  }
+}

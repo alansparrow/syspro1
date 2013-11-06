@@ -1,0 +1,25 @@
+ddd
+total 240
+-rw-rw-r--  1 ubuntu ubuntu  1240 Oct 13 06:26 0
+-rw-rw-r--  1 ubuntu ubuntu     4 Oct 11 09:14 a.txt
+drwxr-xr-x 27 ubuntu ubuntu  4096 Apr 27 04:31 apue.3e
+-rw-r--r--  1 ubuntu ubuntu  4631 Oct  7 06:38 apue.h
+-rwxrwxr-x  1 ubuntu ubuntu 15383 Oct  7 07:48 f13
+-rw-rw-r--  1 ubuntu ubuntu   352 Oct  7 07:48 f13.c
+-rwxrwxr-x  1 ubuntu ubuntu 14980 Oct 10 02:54 f310
+-rw-rw-r--  1 ubuntu ubuntu   881 Oct 10 02:54 f310.c
+-rw-rw-r--  1 ubuntu ubuntu   845 Oct 10 02:40 f310.c~
+-rw-rw-r--  1 ubuntu ubuntu   298 Oct 10 03:02 f311.c
+-rwxrwxr-x  1 ubuntu ubuntu 14818 Oct  9 06:33 f34
+-rw-rw-r--  1 ubuntu ubuntu   277 Oct  9 06:33 f34.c
+-rw-rw-r--  1 ubuntu ubuntu   278 Oct  9 06:33 f34.c~
+-rwxrwxr-x  1 ubuntu ubuntu 15831 Oct 10 06:40 f43
+-rw-rw-r--  1 ubuntu ubuntu   751 Oct 10 06:40 f43.c
+-rw-rw-r--  1 ubuntu ubuntu   752 Oct 10 06:39 f43.c~
+-rw-rw-r--  1 ubuntu ubuntu 75822 Oct  7 07:09 libapue.a
+-rwxrwxr-x  1 ubuntu ubuntu 11065 Oct 13 06:25 temp
+-rw-rw-r--  1 ubuntu ubuntu   895 Oct 13 06:25 temp.c
+-rw-rw-r--  1 ubuntu ubuntu   793 Oct 13 06:24 temp.c~
+-rw-rw-r--  1 ubuntu ubuntu    21 Oct 11 09:12 temp.foo
+-r-x------  1 ubuntu ubuntu 18859 Oct  7 07:54 web_v3
+-rw-rw-r--  1 ubuntu ubuntu  3569 Oct  7 07:53 web_v3.c

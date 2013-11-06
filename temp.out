@@ -1,0 +1,5 @@
+before fork() 
+child process()
+pid = 0, var = 11 glob_val = 99 
+before fork() 
+pid = 6558, var = 10 glob_val = 100 
