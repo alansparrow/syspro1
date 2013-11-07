@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -60,4 +61,10 @@ int main(int argc, char **argv) {
     strcat(result, "Error!\n");
     printf("wtf!\n");
   }
+=======
+#include <stdlib.h>
+int main(void)
+{
+  _exit(0);
+>>>>>>> b8a4b2afbe26a28f0f21a378d5365f28ecfb5ce4
 }

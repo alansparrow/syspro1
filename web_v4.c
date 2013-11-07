@@ -9,17 +9,18 @@
 #include<netdb.h>
 #include<signal.h>
 #include<fcntl.h>
+#include <errno.h>
 
 #define CONNMAX 1
 #define BYTES 1024
 
 char *ROOT;
 char *PORT;
-int listenfd, clients[CONNMAX];
+int listenfd, newfd, clients[CONNMAX];
 void error(char *);
 void startServer(char *);
 void respond(int);
-
+extern int errno;
 int main(int argc, char* argv[])
 {
   struct sockaddr_in clientaddr;
@@ -59,18 +60,31 @@ int main(int argc, char* argv[])
   // ACCEPT connections
   while (1) {
     addrlen = sizeof(clientaddr);
-    clients[slot] = accept (listenfd, (struct sockaddr *) &clientaddr, &addrlen);
-    if (clients[slot]<0)
+    //clients[slot] = accept (listenfd, (struct sockaddr *) &clientaddr, &addrlen);
+    
+    newfd = accept (listenfd, (struct sockaddr *) &clientaddr, &addrlen);
+    
+    if (newfd < 0)
       error ("accept() error");
-    else
-      {
-	// add if pid == 0 then do, else don't do (do only if it is a child process!
+    else {
+      
+      // add if pid == 0 then do, else don't do (do only if it is a child process!)
+      
 	if ((pid = fork()) < 0) {
 	  printf("fork error!\n");
-	} else if (pid > 0) {
-	  respond(slot);//1 request but many responds of the same socket
-	} 
-      }
+	} else if (pid == 0) {  // a child
+	  //close(listenfd);
+	  respond(newfd);                  //1 request but many responds of the same socket
+	  //close(newfd);
+	  //exit(0);
+	  //close(newfd);
+	} else {
+	  //sleep(2);
+	}
+      
+	//respond(newfd);
+	//close(newfd);
+    }
   }
   return 0;
 }
@@ -113,8 +127,8 @@ void startServer(char *port)
     }
 }
 
-//client connection
-void respond(int n)
+//Client connection
+void respond(int newfd)
 {
   char *result = (char *) malloc(sizeof(char) * 10000);// result return to client
   char *pure_path = (char *) malloc(sizeof(char) * 10000);// get path 
@@ -134,7 +148,7 @@ void respond(int n)
   memset( (void*)mesg, (int)'\0', 99999 );
 
   //rcvd=recv(clients[n], mesg, 99999, 0);
-  rcvd=read(clients[n], mesg, 99999);
+  rcvd=read(newfd, mesg, 99999);
 
   if (rcvd<0)    // receive error
     fprintf(stderr,("recv() error\n"));
@@ -150,11 +164,16 @@ void respond(int n)
 	  reqline[2] = strtok (NULL, " \t\n");
 	  if ( strncmp( reqline[2], "HTTP/1.0", 8)!=0 && strncmp( reqline[2], "HTTP/1.1", 8)!=0 )
 	    {
-	      write(clients[n], "HTTP/1.0 400 Bad Request\n", 25);
+	      write(newfd, "HTTP/1.0 400 Bad Request\n", 25);
 	    }
 	  else
 	    {
-	      pos = strstr(reqline[1], param) + 8; //get 1st position when meet '/?param=', +8 means pass through until the real path. Ex: /home/ubuntu/syspro
+	      if ((pos = strstr(reqline[1], param)) != 0) {
+		  pos += 8; //get 1st position when meet '/?param=', 
+		            //+8 means pass through until the real path. Ex: /home/ubuntu/syspro
+	      } else {
+		return ;  // second request is useless, immediately return
+	      }
 	      
 	      index = 0;
 	      // get path(not include '/?param='), terminate when meet ' '
@@ -162,8 +181,8 @@ void respond(int n)
 		pure_path[index++] = c;
 		pos++;
 	      }
-	      pure_path[index] = '\n';
-	      if (stat(pure_path, &s) == 0) {
+	      pure_path[index] = NULL;
+	      if (lstat(pure_path, &s) >= 0) {
 		if (s.st_mode & S_IFDIR) {
 		  printf("path is a directory\n");
 		  strcat(cmd1, "ls -l ");//initialize comd1 as 'ls -l'
@@ -189,14 +208,14 @@ void respond(int n)
 		strcat(result, "Error!\n");
 		printf("wtf! Error!!\n");
 	      }
-	      write(clients[n], result,strlen(result));
+	      write(newfd, result,strlen(result));
 	    }
 	}
     }
   //Closing SOCKET
-  shutdown (clients[n], SHUT_RDWR);      //All further send and recieve operations are DISABLED...
-  close(clients[n]);
-  clients[n]=-1;
-  exit(0);
+  shutdown (newfd, SHUT_RDWR);      //All further send and recieve operations are DISABLED...
+  close(newfd);
+  newfd=-1;
+  //exit(0);
 }
 
