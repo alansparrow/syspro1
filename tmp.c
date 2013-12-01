@@ -1,5 +1,6 @@
 #include "apue.h"
 #include <stdio.h>
+#include <unistd.h>
 
 int main(void) {
 #ifdef _SC_ATEXIT_MAX
@@ -7,4 +8,6 @@ int main(void) {
 #else
   printf("no symbol for _SC_ATEXIT_MAX\n");
 #endif
+
+  printf("User identification: %s\n", getlogin());
 }
