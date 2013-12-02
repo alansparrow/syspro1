@@ -1,0 +1,23 @@
+#include "apue.h"
+#include <errno.h>
+#include <fcntl.h>
+#include <sys/wait.h>
+
+// Pointer to array allocated at run-time
+static pid_t *childpid = NULL;
+
+// From our open_max(), Figure 2.16
+static int maxfd;
+
+FILE * popen(const char *cmdstring, const char *type) {
+  int i;
+  int pfd[2];
+  pid_t pid;
+  FILE *fp;
+
+  // only allow "r" or "w"
+  if ((type[0] != 'r' && type[0] != 'w') || type[1] != 0) {
+    errno = EINVAL; // required by POSIX
+    return NULL;
+  }
+}
